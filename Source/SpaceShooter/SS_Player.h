@@ -40,7 +40,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere)
-		float Field_Widht;
+		float Field_Width;
 
 	UPROPERTY(EditAnywhere)
 		float Field_Height;
@@ -59,6 +59,30 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		float Current_Armor;
 
+	UPROPERTY(EditAnywhere)
+		float Max_Velocity;
+
+	UPROPERTY(BlueprintReadOnly)
+		float PlayerScore;
+
+	//UPROPERTY(EditAnywhere)
+		//TSubclassOf<AProjectile> BP_WeaponProjectile;
+
+	FVector Current_Location;
+	FRotator Current_Rotation;
+	FVector New_Location;
+
+	bool bIsFiring;
+	float WeaponFireRate;
+	float TimeSinceLastShot;
+
+	bool bHit;
+	bool bDead;
+
+	float Current_X_Velocity;
+	float Current_Y_Velocity;
+
+
 	void MoveRight(float AxisValue);
 	void MoveUp(float AxisValue);
 	
@@ -67,8 +91,11 @@ public:
 	void FireWeapon();
 	void StartFiring();
 	void StopFiring();
+	void CollectablePickUp();
 
-
+	//Functions
+	UFUNCTION()
+		void OnBeginOverlap(AActor* PlayerActor, AActor* OtherActor);
 
 
 protected:
