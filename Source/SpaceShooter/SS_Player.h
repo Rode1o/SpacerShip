@@ -7,6 +7,7 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Projectile.h"
 #include "Components/AudioComponent.h"
 #include "SS_Player.generated.h"
 
@@ -65,8 +66,8 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		float PlayerScore;
 
-	//UPROPERTY(EditAnywhere)
-		//TSubclassOf<AProjectile> BP_WeaponProjectile;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<AProjectile> BP_WeaponProjectile;
 
 	FVector Current_Location;
 	FRotator Current_Rotation;

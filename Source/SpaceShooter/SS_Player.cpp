@@ -41,17 +41,6 @@ ASS_Player::ASS_Player()
 }
 
 
-void ASS_Player::FireWeapon()
-{
-}
-
-void ASS_Player::StartFiring()
-{
-}
-
-void ASS_Player::StopFiring()
-{
-}
 
 void ASS_Player::CollectablePickUp()
 {
@@ -132,6 +121,18 @@ void ASS_Player::Tick(float DeltaTime)
 		Current_Location = FVector(Current_Location.X, -Field_Height + 1, Current_Location.Z);
 	}
 
+
+	if (bIsFiring) {
+		if (TimeSinceLastShot > WeaponFireRate) {
+			FireWeapon();
+			TimeSinceLastShot = 0.f;
+		}
+	}
+
+	TimeSinceLastShot += DeltaTime;
+
+
+
 }
 
 // Called to bind functionality to input
@@ -140,9 +141,34 @@ void ASS_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(FName("MoveRight"), this, &ASS_Player::MoveRight);
 	PlayerInputComponent->BindAxis(FName("MoveUp"), this, &ASS_Player::MoveUp);
-
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ASS_Player::StartFiring);
+	PlayerInputComponent->BindAction("Fire", IE_Released, this, &ASS_Player::StopFiring);
 
 }
+
+
+void ASS_Player::FireWeapon()
+{
+	FActorSpawnParameters Params = {};
+	Params.Owner = this;
+
+	AActor* SpawnedProjectile = GetWorld()->SpawnActor(BP_WeaponProjectile, &Current_Location, &Current_Rotation, Params);
+
+}
+
+void ASS_Player::StartFiring()
+{
+
+	bIsFiring = true;
+
+}
+
+void ASS_Player::StopFiring()
+{
+	bIsFiring = false;
+
+}
+
 
 void ASS_Player::MoveRight(float AxisValue)
 {
