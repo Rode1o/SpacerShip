@@ -23,7 +23,7 @@ AHazard::AHazard()
 
 
 
-	Spawn_X_Velocity = 500.f;
+	Spawn_X_Velocity = -500.f;
 	Spawn_Y_Velocity = 0.f;
 	SelfDestructTimer = 1.f;
 
@@ -31,6 +31,14 @@ AHazard::AHazard()
 
 
 	
+}
+
+
+
+void AHazard::SetHazardVelocity(FVector NewVelocity)
+{
+	Spawn_X_Velocity = NewVelocity.X;
+	Spawn_Y_Velocity = NewVelocity.Y;
 }
 
 
@@ -74,13 +82,76 @@ void AHazard::Tick(float DeltaTime)
 	this->SetActorRotation(FRotator(Initial_Rotation * 100.f, Initial_Rotation* 50.f, 0.f));
 	this->SetActorLocation(FVector(Initial_X_Location, Initial_Y_Location, 0.f));
 
+	//destroy Asteroid
+
+	if (SelfDestructTimer <= 0.f) {
+		this->Destroy();
+	}
+
+	if (bHit) {
+		bHit = false;
+		bStartDestroyTimer = true;
+
+		AsteroidExplosionFX->Activate();
+		AsteroidExplosionFX->SetWorldLocation(this->GetActorLocation());
+		AsteroidExplosionFX->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
+
+		AsteroidExplosionSound->Activate();
+		AsteroidExplosionSound->Play();
+
+		this->StaticMesh->SetVisibility(false);
+		this->SetActorEnableCollision(false);
+
+		if (this->GetActorScale3D().X > 6.f) {
+
+			SpawnChildren(FMath::RandRange(2,5));
 
 
+		}
+	}
 
+	if (bStartDestroyTimer) {
+		SelfDestructTimer -= DeltaTime;
+	}
 
 
 }
 
 void AHazard::OnBeginOverlap(AActor* AsteroidActor, AActor* OtherActor)
 {
+
+	if (OtherActor->ActorHasTag("Bounds")) {
+		SelfDestructTimer = 0.f;
+	}
+
+	if (OtherActor->ActorHasTag("Projectile") || OtherActor->ActorHasTag("Player")) {
+		bHit = true;
+	}
+}
+
+
+void AHazard::SpawnChildren(int32 NumChildren)
+{
+	FActorSpawnParameters Params = {	};
+
+	Params.Owner = this;
+
+	for (int i = 0; i < NumChildren; i++) {
+		if (ChildSpawn != nullptr) {
+
+			AHazard* Newhazard = Cast<AHazard>(GetWorld()->SpawnActor(ChildSpawn, new FVector(this->GetActorLocation()), new FRotator(this->GetActorRotation()), Params));
+
+			Newhazard->Initial_X_Location = this->GetActorLocation().X;
+			Newhazard->Initial_Y_Location = this->GetActorLocation().Y;
+			Newhazard->SetHazardVelocity(FVector(FMath::RandRange(-250, 100), FMath::RandRange(-50, 50), 0.f));
+
+			float RandScale = FMath::RandRange(2, 5);
+
+			Newhazard->SetActorScale3D(FVector(RandScale, RandScale, RandScale));
+
+			Newhazard->SetActorEnableCollision(true);
+			Newhazard->StaticMesh->SetVisibility(true);
+
+		}
+	}
 }

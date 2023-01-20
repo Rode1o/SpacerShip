@@ -7,6 +7,7 @@
 #include "Components/AudioComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "Projectile.h"
+#include "PickUp.h"
 
 #include "Enemy.generated.h"
 
@@ -36,8 +37,8 @@ public:
 
 	UWorld* ThisWorld;
 
-//	UPROPERTY(EditAnywhere)
-	//	TSubclassOf<APickUp> PickUpCan;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<APickUp> PickUpCan;
 
 	UPROPERTY(EditAnywhere)
 		FVector CurrentVelocity;

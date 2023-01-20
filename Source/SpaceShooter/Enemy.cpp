@@ -88,8 +88,22 @@ void AEnemy::Tick(float DeltaTime)
 		fBurstDelay += DeltaTime;
 	}
 	
+	if (bDestroy) {
+		this->Destroy();
+	}
 
+	if (bHit) {
+		StaticMesh->SetVisibility(false);
+		this->SetActorEnableCollision(false);
+		ExplosionFX->Activate();
+		ExplosionSound->Activate();
+
+		fDestroyTimer -= DeltaTime;
+	}
 	
+	if (fDestroyTimer <= 0.f) {
+		this->Destroy();
+	}
 
 }
 
@@ -102,4 +116,34 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::OnBeginOverlap(AActor* EnemyActor, AActor* OtherActor)
 {
+
+	if (OtherActor->ActorHasTag("Bounds")) {
+		bDestroy = true;
+	}
+	if (OtherActor->ActorHasTag("Asteroid") || OtherActor->ActorHasTag("Player")) {
+		bHit = true;
+	}
+
+	if (OtherActor->ActorHasTag("Projectile")) {
+		bHit = true;
+		
+		if (ThisWorld) {
+			
+			if (FMath::RandRange(0, 10) > 7) {
+
+				FVector Current_Location = this->GetActorLocation();
+				FRotator Current_Rotation = this->GetActorRotation();
+				FActorSpawnParameters Params = {};
+
+				ThisWorld->SpawnActor(PickUpCan, &Current_Location, &Current_Rotation, Params);
+
+
+			}
+
+
+		}
+	}
+
+
+
 }
