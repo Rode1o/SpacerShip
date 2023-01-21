@@ -6,7 +6,7 @@
 #include "GameFramework/GameMode.h"
 #include "Enemy.h"
 #include "Hazard.h"
-
+#include "Blueprint/UserWidget.h"
 
 
 #include "SS_GameMode.generated.h"
@@ -54,6 +54,25 @@ protected:
 	FVector AsteroidSpawnLocation;
 	FRotator AsteroidSpawnRotation;
 	UWorld* ThisWorld;
+
+
+	// add widget
+
+	UPROPERTY(EditAnywhere, Category = "HUDElements")
+		TSubclassOf<UUserWidget> Score_Widget_Class;
+	UUserWidget* Score_Widget;
+
+
+
+	UPROPERTY(EditAnywhere, Category = "HUDElements")
+		TSubclassOf<UUserWidget> Shield_And_Armor_Widget_Class;
+	UUserWidget* Shield_Armor_Widget;
+
+	UPROPERTY(EditAnywhere, Category = "HUDElements")
+		TSubclassOf<UUserWidget> Restart_Widget_Class;
+	UUserWidget* Restart_Widget;
+
+	APlayerController* PC_Ref;
 
 
 };

@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 
 #include "Components/CapsuleComponent.h"
-
 #include "Projectile.generated.h"
 
 UCLASS()
@@ -33,7 +32,6 @@ public:
 	FVector CurrentLocation;
 	bool bHit;
 	bool bDestroy;
-
 
 
 

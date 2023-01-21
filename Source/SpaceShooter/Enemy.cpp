@@ -72,7 +72,7 @@ void AEnemy::Tick(float DeltaTime)
 
 	// handle shootinh
 
-	if (TimeSinceLastShot >= 1.f && !bHit) {
+	if (TimeSinceLastShot >= 0.7f && !bHit) {
 
 		if (fBurstDelay >= 0.15f) {
 			FActorSpawnParameters Params = {  };
